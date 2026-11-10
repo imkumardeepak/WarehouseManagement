@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { FieldValues } from "react-hook-form";
-import { ZodType, ZodTypeDef } from "zod";
+import { ZodType } from "zod";
 import { Plus, LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHeader, Crumb } from "./PageHeader";
@@ -36,7 +36,7 @@ export interface MasterConfig<T extends BaseRecord, F extends FieldValues> {
   description: string;
   icon: LucideIcon;
   breadcrumbs?: Crumb[];
-  schema: ZodType<F, ZodTypeDef, unknown>;
+  schema: ZodType<F>;
   fields: (state: WmsState, lookups: Lookups) => FieldConfig<F>[];
   emptyForm: (state: WmsState) => F;
   toForm: (record: T) => F;

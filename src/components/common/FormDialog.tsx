@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useForm, Controller, DefaultValues, FieldValues, Path } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ZodType, ZodTypeDef } from "zod";
+import { ZodType } from "zod";
 import {
   Dialog,
   DialogContent,
@@ -39,7 +39,7 @@ interface FormDialogProps<T extends FieldValues> {
   title: string;
   description?: string;
   fields: FieldConfig<T>[];
-  schema: ZodType<T, ZodTypeDef, unknown>;
+  schema: ZodType<T>;
   defaultValues: DefaultValues<T>;
   onSubmit: (values: T) => void;
   submitLabel?: string;

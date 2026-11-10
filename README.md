@@ -10,7 +10,9 @@ Manage products, warehouse locations, stock movements, and inventory reporting f
 
 StockFlow is a **frontend warehouse-management demo** with 27 pages, seeded inventory data, reusable management screens, and browser-local persistence. It runs without a backend, database server, or API credentials.
 
-> **Project status:** The development UI runs, but the current dependency set has a Zod v3/v4 compatibility issue that blocks type checking and production builds. See [Known limitations](#known-limitations).
+**Demo URL:** https://imkumardeepak.github.io/WarehouseManagement/
+
+The project is configured for free GitHub Pages hosting with automatic deployments from `main`. Type checking and production builds use compatible Zod 4 and Vite 8 dependencies.
 
 ![StockFlow dashboard showing inventory KPIs, stock-movement charts, warehouse distribution, and recent transactions](docs/images/dashboard.png)
 
@@ -140,7 +142,19 @@ No `.env` file or sign-in is required. The first visit initializes demo data aut
 - `npm run build` — Run TypeScript checking, then create a production bundle in `dist/`.
 - `npm run preview` — Serve an existing production build locally.
 
-**Current build caveat:** `npm run lint` and `npm run build` fail until the Zod compatibility issue below is resolved. `npm run preview` requires a successful build first.
+`npm run preview` requires a successful build first.
+
+### Free deployment with GitHub Pages
+
+The workflow in `.github/workflows/deploy.yml` installs locked dependencies, builds with Node.js 24, and publishes `dist/` to GitHub Pages on pushes to `main`. It can also be started manually from the repository's Actions tab.
+
+- Repository **Settings → Pages → Source** must be set to **GitHub Actions**.
+- The workflow sets `GITHUB_PAGES=true` so Vite builds assets under `/WarehouseManagement/`.
+- Local development and regular builds retain the `/` base path.
+- Hash-based routing lets direct links and refreshes work without server rewrites. For example: https://imkumardeepak.github.io/WarehouseManagement/#/inventory/current-stock
+- Deployment status and build logs are available in [GitHub Actions](https://github.com/imkumardeepak/WarehouseManagement/actions/workflows/deploy.yml).
+
+Hosting serves the frontend only. Each browser retains its own independent demo data; deployment does not create a shared database.
 
 ## Stock workflow
 
@@ -218,14 +232,6 @@ WarehouseManagement/
 
 ## Known limitations
 
-### Zod compatibility blocks production builds
-
-The project currently declares Zod 4, but parts of the source use Zod 3 APIs:
-
-- `ZodTypeDef` imports and three-argument `ZodType` declarations in `FormDialog.tsx` and `MasterPage.tsx`.
-- The `invalid_type_error` option in `ItemMaster.tsx`.
-
-The last build check reported **six TypeScript errors** in these three files. Align the source and form resolver with Zod 4, or deliberately restore compatible Zod 3 dependencies, before relying on production builds.
 
 ### Demo scope
 
@@ -234,7 +240,7 @@ The last build check reported **six TypeScript errors** in these three files. Al
 - Stock costing and posting rules are demo implementations and need further validation before operational or financial use; transfer-in movements currently do not carry source cost or expiry metadata.
 - Some preferences are stored but not fully enforced: date formatting is fixed in the formatter, decimal-unit preferences do not constrain transaction quantities, and location capacities are not enforced.
 - No automated unit or end-to-end test suite is configured.
-- Static hosting must rewrite application routes to `index.html` because the app uses `BrowserRouter`.
+- Routes use `#/...` URLs so static hosts do not need application-route rewrites.
 
 ## Contributing
 
