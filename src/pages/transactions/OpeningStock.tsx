@@ -139,7 +139,7 @@ export default function OpeningStockPage() {
                   <Button variant="outline" size="sm" onClick={addLine}><Plus className="h-4 w-4" /> Add Line</Button>
                 </div>
                 <div className="overflow-hidden rounded-lg border border-border">
-                  <Table>
+                  <Table mobileCards>
                     <TableHeader>
                       <TableRow className="bg-muted/40 hover:bg-muted/40">
                         <TableHead className="min-w-[200px]">Item</TableHead>
@@ -155,14 +155,14 @@ export default function OpeningStockPage() {
                     <TableBody>
                       {draft.lines.map((l) => (
                         <TableRow key={l.id}>
-                          <TableCell><PickSelect value={l.itemId} onChange={(v) => onItemPick(l.id, v)} options={itemOptions} placeholder="Select item" className="min-w-[200px]" /></TableCell>
-                          <TableCell><PickSelect value={l.locationId} onChange={(v) => updateLine(l.id, { locationId: v })} options={locOptions(draft.warehouseId)} placeholder="Location" disabled={!draft.warehouseId} /></TableCell>
-                          <TableCell><Input value={l.batchNo} onChange={(e) => updateLine(l.id, { batchNo: e.target.value })} placeholder="Batch" /></TableCell>
-                          <TableCell><Input type="date" value={toDateInput(l.expiryDate)} onChange={(e) => updateLine(l.id, { expiryDate: e.target.value ? new Date(e.target.value).toISOString() : null })} /></TableCell>
-                          <TableCell className="text-right"><Input type="number" min={0} className="w-20 text-right" value={l.quantity} onChange={(e) => updateLine(l.id, { quantity: Number(e.target.value) })} /></TableCell>
-                          <TableCell className="text-right"><Input type="number" min={0} className="w-24 text-right" value={l.unitCost} onChange={(e) => updateLine(l.id, { unitCost: Number(e.target.value) })} /></TableCell>
-                          <TableCell className="text-right font-medium tabular-nums">{formatCurrency(l.quantity * l.unitCost)}</TableCell>
-                          <TableCell><Button variant="ghost" size="icon-sm" onClick={() => removeLine(l.id)} disabled={draft.lines.length === 1}><Trash2 className="h-4 w-4 text-destructive" /></Button></TableCell>
+                          <TableCell data-label="Item"><PickSelect value={l.itemId} onChange={(v) => onItemPick(l.id, v)} options={itemOptions} placeholder="Select item" className="min-w-[200px]" /></TableCell>
+                          <TableCell data-label="Location"><PickSelect value={l.locationId} onChange={(v) => updateLine(l.id, { locationId: v })} options={locOptions(draft.warehouseId)} placeholder="Location" disabled={!draft.warehouseId} /></TableCell>
+                          <TableCell data-label="Batch"><Input value={l.batchNo} onChange={(e) => updateLine(l.id, { batchNo: e.target.value })} placeholder="Batch" /></TableCell>
+                          <TableCell data-label="Expiry"><Input type="date" value={toDateInput(l.expiryDate)} onChange={(e) => updateLine(l.id, { expiryDate: e.target.value ? new Date(e.target.value).toISOString() : null })} /></TableCell>
+                          <TableCell data-label="Quantity" className="text-right"><Input type="number" min={0} className="w-20 text-right" value={l.quantity} onChange={(e) => updateLine(l.id, { quantity: Number(e.target.value) })} /></TableCell>
+                          <TableCell data-label="Unit Cost" className="text-right"><Input type="number" min={0} className="w-24 text-right" value={l.unitCost} onChange={(e) => updateLine(l.id, { unitCost: Number(e.target.value) })} /></TableCell>
+                          <TableCell data-label="Value" className="text-right font-medium tabular-nums">{formatCurrency(l.quantity * l.unitCost)}</TableCell>
+                          <TableCell><Button variant="ghost" size="icon-sm" aria-label="Remove item" onClick={() => removeLine(l.id)} disabled={draft.lines.length === 1}><Trash2 className="h-4 w-4 text-destructive" /></Button></TableCell>
                         </TableRow>
                       ))}
                     </TableBody>

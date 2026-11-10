@@ -29,7 +29,7 @@ export function RowActions({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon-sm" onClick={(e) => e.stopPropagation()}>
+        <Button variant="ghost" size="icon-sm" className="h-11 w-11 sm:h-8 sm:w-8" aria-label="Row actions" onClick={(e) => e.stopPropagation()}>
           <MoreHorizontal className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>

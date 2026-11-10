@@ -1,12 +1,33 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
-const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
-  ({ className, ...props }, ref) => (
-    <div className="relative w-full overflow-auto scrollbar-thin">
-      <table ref={ref} className={cn("w-full caption-bottom text-sm", className)} {...props} />
-    </div>
-  ),
+interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
+  mobileCards?: boolean;
+}
+
+const Table = React.forwardRef<HTMLTableElement, TableProps>(
+  ({ className, mobileCards = false, ...props }, ref) => {
+    const tableRef = React.useRef<HTMLTableElement>(null);
+    const previousRows = React.useRef(0);
+    React.useImperativeHandle(ref, () => tableRef.current!);
+
+    React.useEffect(() => {
+      const rows = tableRef.current?.tBodies[0]?.rows;
+      const count = rows?.length ?? 0;
+      if (mobileCards && previousRows.current > 0 && count > previousRows.current && window.matchMedia("(max-width: 639px)").matches) {
+        const row = rows?.[count - 1];
+        row?.scrollIntoView({ block: "start", behavior: "instant" });
+        row?.querySelector<HTMLButtonElement>('[role="combobox"]')?.focus({ preventScroll: true });
+      }
+      previousRows.current = count;
+    });
+
+    return (
+      <div className={cn("relative w-full overflow-auto scrollbar-thin", mobileCards && "table-mobile-cards")}>
+        <table ref={tableRef} className={cn("w-full caption-bottom text-sm", className)} {...props} />
+      </div>
+    );
+  },
 );
 Table.displayName = "Table";
 

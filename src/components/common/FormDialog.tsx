@@ -81,79 +81,81 @@ export function FormDialog<T extends FieldValues>({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent size={size} className="max-h-[90vh] overflow-y-auto scrollbar-thin">
-        <DialogHeader>
+      <DialogContent size={size} className="max-h-[calc(100dvh-2rem)] overflow-hidden">
+        <DialogHeader className="shrink-0 pr-6">
           <DialogTitle>{title}</DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
-        <form onSubmit={submit} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {fields.map((field) => {
-            const error = (errors as Record<string, { message?: string }>)[field.name as string];
-            return (
-              <div
-                key={field.name as string}
-                className={cn("flex flex-col gap-1.5", field.colSpan === 2 && "sm:col-span-2")}
-              >
-                <Label htmlFor={field.name as string}>{field.label}</Label>
+        <form onSubmit={submit} className="flex min-h-0 flex-col gap-4">
+          <div className="-mx-1 grid min-h-0 grid-cols-1 gap-4 overflow-y-auto overscroll-contain px-1 pb-2 scrollbar-thin sm:grid-cols-2">
+            {fields.map((field) => {
+              const error = (errors as Record<string, { message?: string }>)[field.name as string];
+              return (
+                <div
+                  key={field.name as string}
+                  className={cn("flex flex-col gap-1.5", field.colSpan === 2 && "sm:col-span-2")}
+                >
+                  <Label htmlFor={field.name as string}>{field.label}</Label>
 
-                {field.type === "text" || field.type === "date" || field.type === "number" ? (
-                  <div className="relative">
-                    {field.prefix && (
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
-                        {field.prefix}
-                      </span>
-                    )}
-                    <Input
-                      id={field.name as string}
-                      type={field.type === "number" ? "number" : field.type === "date" ? "date" : "text"}
-                      placeholder={field.placeholder}
-                      min={field.min}
-                      step={field.step}
-                      className={cn(field.prefix && "pl-7")}
-                      {...register(field.name, field.type === "number" ? { valueAsNumber: true } : {})}
+                  {field.type === "text" || field.type === "date" || field.type === "number" ? (
+                    <div className="relative">
+                      {field.prefix && (
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+                          {field.prefix}
+                        </span>
+                      )}
+                      <Input
+                        id={field.name as string}
+                        type={field.type === "number" ? "number" : field.type === "date" ? "date" : "text"}
+                        placeholder={field.placeholder}
+                        min={field.min}
+                        step={field.step}
+                        className={cn(field.prefix && "pl-7")}
+                        {...register(field.name, field.type === "number" ? { valueAsNumber: true } : {})}
+                      />
+                    </div>
+                  ) : field.type === "textarea" ? (
+                    <Textarea id={field.name as string} placeholder={field.placeholder} {...register(field.name)} />
+                  ) : field.type === "select" ? (
+                    <Controller
+                      control={control}
+                      name={field.name}
+                      render={({ field: f }) => (
+                        <Select value={(f.value as string) ?? ""} onValueChange={f.onChange}>
+                          <SelectTrigger id={field.name as string}>
+                            <SelectValue placeholder={field.placeholder ?? "Select..."} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {field.options?.map((o) => (
+                              <SelectItem key={o.value} value={o.value}>
+                                {o.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
                     />
-                  </div>
-                ) : field.type === "textarea" ? (
-                  <Textarea id={field.name as string} placeholder={field.placeholder} {...register(field.name)} />
-                ) : field.type === "select" ? (
-                  <Controller
-                    control={control}
-                    name={field.name}
-                    render={({ field: f }) => (
-                      <Select value={(f.value as string) ?? ""} onValueChange={f.onChange}>
-                        <SelectTrigger>
-                          <SelectValue placeholder={field.placeholder ?? "Select..."} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {field.options?.map((o) => (
-                            <SelectItem key={o.value} value={o.value}>
-                              {o.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )}
-                  />
-                ) : field.type === "switch" ? (
-                  <Controller
-                    control={control}
-                    name={field.name}
-                    render={({ field: f }) => (
-                      <div className="flex h-10 items-center gap-2">
-                        <Switch checked={!!f.value} onCheckedChange={f.onChange} />
-                        <span className="text-sm text-muted-foreground">{f.value ? "Active" : "Inactive"}</span>
-                      </div>
-                    )}
-                  />
-                ) : null}
+                  ) : field.type === "switch" ? (
+                    <Controller
+                      control={control}
+                      name={field.name}
+                      render={({ field: f }) => (
+                        <div className="flex h-10 items-center gap-2">
+                          <Switch id={field.name as string} checked={!!f.value} onCheckedChange={f.onChange} />
+                          <span className="text-sm text-muted-foreground">{f.value ? "Active" : "Inactive"}</span>
+                        </div>
+                      )}
+                    />
+                  ) : null}
 
-                {field.help && !error && <p className="text-xs text-muted-foreground">{field.help}</p>}
-                {error?.message && <p className="text-xs font-medium text-destructive">{error.message}</p>}
-              </div>
-            );
-          })}
+                  {field.help && !error && <p className="text-xs text-muted-foreground">{field.help}</p>}
+                  {error?.message && <p className="text-xs font-medium text-destructive">{error.message}</p>}
+                </div>
+              );
+            })}
 
-          <DialogFooter className="sticky bottom-0 z-10 -mx-6 -mb-6 mt-2 gap-2 border-t border-border bg-card px-6 py-4 sm:col-span-2">
+          </div>
+          <DialogFooter className="shrink-0 gap-2 border-t border-border bg-card pt-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>

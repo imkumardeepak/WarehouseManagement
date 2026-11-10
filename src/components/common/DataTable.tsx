@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import { motion } from "framer-motion";
 import { ArrowDown, ArrowUp, ArrowUpDown, ChevronLeft, ChevronRight, Download } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
@@ -164,12 +163,9 @@ export function DataTable<T>({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {paged.map((row, i) => (
-                  <motion.tr
+                {paged.map((row) => (
+                  <TableRow
                     key={rowKey(row)}
-                    initial={{ opacity: 0, y: 4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.18, delay: Math.min(i * 0.02, 0.2) }}
                     onClick={onRowClick ? () => onRowClick(row) : undefined}
                     className={cn(
                       "border-b border-border transition-colors hover:bg-muted/40",
@@ -181,7 +177,7 @@ export function DataTable<T>({
                         {col.accessor(row)}
                       </TableCell>
                     ))}
-                  </motion.tr>
+                  </TableRow>
                 ))}
               </TableBody>
             </Table>

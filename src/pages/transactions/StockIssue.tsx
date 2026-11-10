@@ -177,7 +177,7 @@ export default function StockIssuePage() {
                   <Button variant="outline" size="sm" onClick={addLine}><Plus className="h-4 w-4" /> Add Item</Button>
                 </div>
                 <div className="overflow-hidden rounded-lg border border-border">
-                  <Table>
+                  <Table mobileCards>
                     <TableHeader>
                       <TableRow className="bg-muted/40 hover:bg-muted/40">
                         <TableHead className="min-w-[200px]">Item</TableHead>
@@ -195,25 +195,25 @@ export default function StockIssuePage() {
                         const over = l.quantity > avail;
                         return (
                           <TableRow key={l.id}>
-                            <TableCell>
+                            <TableCell data-label="Item">
                               <PickSelect value={l.itemId} onChange={(v) => updateLine(l.id, { itemId: v, locationId: "", batchNo: "" })} options={itemOptions} placeholder="Select item" className="min-w-[200px]" />
                             </TableCell>
-                            <TableCell>
+                            <TableCell data-label="Location">
                               <PickSelect value={l.locationId} onChange={(v) => updateLine(l.id, { locationId: v, batchNo: "" })} options={locOptions(draft.warehouseId, l.itemId)} placeholder="Location" disabled={!l.itemId} />
                             </TableCell>
-                            <TableCell>
+                            <TableCell data-label="Batch">
                               <PickSelect value={l.batchNo} onChange={(v) => updateLine(l.id, { batchNo: v })} options={batchOptions(draft.warehouseId, l.itemId, l.locationId)} placeholder="Batch" disabled={!l.locationId} />
                             </TableCell>
-                            <TableCell className="text-right tabular-nums">
+                            <TableCell data-label="Available" className="text-right tabular-nums">
                               <span className={cn("font-medium", avail <= 0 ? "text-destructive" : "text-success")}>{formatNumber(avail)}</span>
                             </TableCell>
-                            <TableCell className="text-right">
+                            <TableCell data-label="Issue Quantity" className="text-right">
                               <Input type="number" min={0} className={cn("w-20 text-right", over && "border-destructive focus-visible:ring-destructive")} value={l.quantity} onChange={(e) => updateLine(l.id, { quantity: Number(e.target.value) })} />
                               {over && <p className="mt-1 text-[11px] font-medium text-destructive">Only {formatNumber(avail)} available</p>}
                             </TableCell>
-                            <TableCell className="text-muted-foreground">{lk.unitSymbol(l.itemId)}</TableCell>
+                            <TableCell data-label="Unit" className="text-muted-foreground">{lk.unitSymbol(l.itemId)}</TableCell>
                             <TableCell>
-                              <Button variant="ghost" size="icon-sm" onClick={() => removeLine(l.id)} disabled={draft.lines.length === 1}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                              <Button variant="ghost" size="icon-sm" aria-label="Remove item" onClick={() => removeLine(l.id)} disabled={draft.lines.length === 1}><Trash2 className="h-4 w-4 text-destructive" /></Button>
                             </TableCell>
                           </TableRow>
                         );

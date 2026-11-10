@@ -154,7 +154,7 @@ export default function StockAdjustmentPage() {
                   <Button variant="outline" size="sm" onClick={addLine}><Plus className="h-4 w-4" /> Add Line</Button>
                 </div>
                 <div className="overflow-hidden rounded-lg border border-border">
-                  <Table>
+                  <Table mobileCards>
                     <TableHeader>
                       <TableRow className="bg-muted/40 hover:bg-muted/40">
                         <TableHead className="min-w-[200px]">Item</TableHead>
@@ -173,26 +173,26 @@ export default function StockAdjustmentPage() {
                         const negative = l.physicalQty < 0;
                         return (
                           <TableRow key={l.id}>
-                            <TableCell>
+                            <TableCell data-label="Item">
                               <PickSelect value={l.itemId} onChange={(v) => updateLine(l.id, { itemId: v, locationId: "", batchNo: "", systemQty: 0, physicalQty: 0 })} options={itemOptions} placeholder="Select item" className="min-w-[200px]" />
                             </TableCell>
-                            <TableCell>
+                            <TableCell data-label="Location">
                               <PickSelect value={l.locationId} onChange={(v) => updateLine(l.id, { locationId: v, batchNo: "", systemQty: 0, physicalQty: 0 })} options={locOptions(draft.warehouseId, l.itemId)} placeholder="Location" disabled={!l.itemId} />
                             </TableCell>
-                            <TableCell>
+                            <TableCell data-label="Batch">
                               <PickSelect value={l.batchNo} onChange={(v) => onBatchPick(l.id, v)} options={batchOptions(draft.warehouseId, l.itemId, l.locationId)} placeholder="Batch" disabled={!l.locationId} />
                             </TableCell>
-                            <TableCell className="text-right tabular-nums text-muted-foreground">{formatNumber(l.systemQty)}</TableCell>
-                            <TableCell className="text-right">
+                            <TableCell data-label="System Quantity" className="text-right tabular-nums text-muted-foreground">{formatNumber(l.systemQty)}</TableCell>
+                            <TableCell data-label="Physical Quantity" className="text-right">
                               <Input type="number" min={0} className={cn("w-20 text-right", negative && "border-destructive")} value={l.physicalQty} onChange={(e) => updateLine(l.id, { physicalQty: Number(e.target.value) })} />
                             </TableCell>
-                            <TableCell className="text-right tabular-nums">
+                            <TableCell data-label="Difference" className="text-right tabular-nums">
                               <Badge variant={diff === 0 ? "muted" : diff > 0 ? "success" : "destructive"}>{diff > 0 ? "+" : ""}{diff}</Badge>
                             </TableCell>
-                            <TableCell>
+                            <TableCell data-label="Reason">
                               <PickSelect value={l.reason} onChange={(v) => updateLine(l.id, { reason: v })} options={reasons.map((r) => ({ value: r, label: r }))} />
                             </TableCell>
-                            <TableCell><Button variant="ghost" size="icon-sm" onClick={() => removeLine(l.id)} disabled={draft.lines.length === 1}><Trash2 className="h-4 w-4 text-destructive" /></Button></TableCell>
+                            <TableCell><Button variant="ghost" size="icon-sm" aria-label="Remove item" onClick={() => removeLine(l.id)} disabled={draft.lines.length === 1}><Trash2 className="h-4 w-4 text-destructive" /></Button></TableCell>
                           </TableRow>
                         );
                       })}
